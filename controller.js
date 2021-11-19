@@ -8,7 +8,7 @@ exports.index = function (req, res) {
 };
 
 exports.showAllDorayaki = function (req, res) {
-  connection.query("SELECT * FROM item", function (error, rows, fileds) {
+  connection.query("SELECT * FROM item", function (error, rows) {
     if (error) {
       console.log(error);
     } else {
@@ -20,8 +20,8 @@ exports.showAllDorayaki = function (req, res) {
 exports.showDorayakiDetailById = function (req, res) {
   let id = req.params.id;
   connection.query(
-    `SELECT * FROM item WHERE ${id}`,
-    function (error, rows, fileds) {
+    `SELECT * FROM item WHERE idItem = ${id}`,
+    function (error, rows) {
       if (error) {
         console.log(error);
       } else {
@@ -29,4 +29,15 @@ exports.showDorayakiDetailById = function (req, res) {
       }
     }
   );
+};
+
+exports.showRequests = function (req, res) {
+  let id = req.params.id;
+  connection.query("SELECT * FROM requests", function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      response.ok(rows, res);
+    }
+  });
 };
