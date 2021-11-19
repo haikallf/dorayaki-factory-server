@@ -10,9 +10,23 @@ exports.index = function (req, res) {
 exports.showAllDorayaki = function (req, res) {
   connection.query("SELECT * FROM item", function (error, rows, fileds) {
     if (error) {
-      connection.log(error);
+      console.log(error);
     } else {
       response.ok(rows, res);
     }
   });
+};
+
+exports.showDorayakiDetailById = function (req, res) {
+  let id = req.params.id;
+  connection.query(
+    `SELECT * FROM item WHERE ${id}`,
+    function (error, rows, fileds) {
+      if (error) {
+        console.log(error);
+      } else {
+        response.ok(rows, res);
+      }
+    }
+  );
 };

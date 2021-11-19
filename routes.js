@@ -6,4 +6,6 @@ module.exports = function (app) {
   app.route("/").get(myjson.index);
 
   app.route("/dorayaki").get(myjson.showAllDorayaki);
+
+  app.route("/dorayaki/:id").get(myjson.showDorayakiDetailById);
 };
