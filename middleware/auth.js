@@ -1,5 +1,5 @@
 var connection = require("../connect");
-var mysql = require("mysql");
+var mysql = require("mysql2");
 var md5 = require("md5");
 var response = require("../res");
 var jwt = require("jsonwebtoken");
@@ -11,7 +11,7 @@ exports.registration = function (req, res) {
   var post = {
     username: req.body.username,
     email: req.body.email,
-    password: req.body.password,
+    password: md5(req.body.password),
     name: req.body.name,
   };
 
@@ -46,12 +46,21 @@ exports.registration = function (req, res) {
 exports.login = function (req, res) {
   var post = {
     password: req.body.password,
-    email: req.body.email,
+    username: req.body.username,
   };
 
-  var query = "SELECT * FROM ?? WHERE ??=? AND ??=?";
-  var table = ["user", "password", md5(post.password), "email", post.email];
-  query = mysql.format(query, table);
+  // var query = "SELECT * FROM ?? WHERE ??=? AND ??=?";
+  var query = `SELECT * FROM user WHERE username='${
+    post.username
+  }' AND password='${md5(post.password)}'`;
+  // var table = [
+  //   "user",
+  //   "password",
+  //   md5(post.password),
+  //   "username",
+  //   post.username,
+  // ];
+  query = mysql.format(query);
 
   connection.query(query, function (error, rows) {
     if (error) {
@@ -63,13 +72,13 @@ exports.login = function (req, res) {
         });
         id_user = rows[0].id;
         var data = {
-          id_user: id_user,
+          username: id_user,
           access_token: token,
           ip: ip.address(),
         };
 
-        var query = "INSERT INTO ?? SET ?";
-        var table = ["access_token", data];
+        var query = "INSERT INTO access_token VALUES username";
+        var table = ["access_token"];
 
         query = mysql.format(query, table);
         connection.query(query, data, function (error, rows) {
@@ -80,7 +89,7 @@ exports.login = function (req, res) {
               success: true,
               message: "JWT token generated successfully",
               token: token,
-              currUser: data.id_user,
+              currUser: data.username,
             });
           }
         });
