@@ -3,6 +3,8 @@
 var response = require("./res");
 var connection = require("./connect");
 var mysql = require("mysql2");
+const nodemailer = require("nodemailer");
+const { options } = require("./middleware");
 
 exports.index = function (req, res) {
   response.ok("REST App Working", res);
@@ -111,6 +113,45 @@ exports.editIngredients = function (req, res) {
       console.log(error);
     } else {
       res.json({ success: true, message: "Update success!" });
+    }
+  });
+};
+
+exports.showIngredientDetailsById = function (req, res) {
+  var idBahan = req.params.id;
+  var query = `SELECT * FROM bahan_baku WHERE idBahan = '${idBahan}'`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
+
+// EMAIL
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: "polarisgray4@gmail.com",
+    pass: "Haikallf-17",
+  },
+});
+
+const emailDetails = {
+  from: "polarisgray4@gmail.com",
+  to: "haikalfadil68@gmail.com",
+  subject: "Penambahan Stok Dorayaki",
+  text: "Halo Admin, ada request penambahan stok dorayaki ya.",
+};
+
+exports.sendMail = function (req, res) {
+  transporter.sendMail(emailDetails, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(info.response);
     }
   });
 };

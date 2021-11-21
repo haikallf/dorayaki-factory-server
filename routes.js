@@ -12,9 +12,13 @@ module.exports = function (app) {
 
   app.route("/tambahbahan").post(myjson.addIngredients);
 
+  app.route("/bahan/:id").get(myjson.showIngredientDetailsById);
+
   app.route("/bahan/:id").put(myjson.editIngredients);
 
   app.route("/dorayaki").get(myjson.showAllDorayaki);
 
   app.route("/dorayaki/:id").get(myjson.showDorayakiDetailById);
+
+  app.route("/mail").get(myjson.sendMail);
 };
