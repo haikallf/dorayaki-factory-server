@@ -169,6 +169,18 @@ exports.showAllRequests = function (req, res) {
   });
 };
 
+exports.showPendingRequests = function (req, res) {
+  var query = "SELECT * FROM requests WHERE status = 'PENDING'";
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
+
 exports.showRequestsById = function (req, res) {
   var idRequest = req.params.id;
   var query = `SELECT * FROM requests WHERE idRequest = '${idRequest}'`;
