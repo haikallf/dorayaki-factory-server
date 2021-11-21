@@ -155,3 +155,29 @@ exports.sendMail = function (req, res) {
     }
   });
 };
+
+// Requests
+exports.showAllRequests = function (req, res) {
+  var query = "SELECT * FROM requests";
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
+
+exports.showRequestsById = function (req, res) {
+  var idRequest = req.params.id;
+  var query = `SELECT * FROM requests WHERE idRequest = '${idRequest}'`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
