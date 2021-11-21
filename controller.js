@@ -98,3 +98,19 @@ exports.addIngredients = function (req, res) {
     }
   });
 };
+
+exports.editIngredients = function (req, res) {
+  var idBahan = req.params.id;
+  var namaBahan = req.body.namaBahan;
+  var stokBahan = req.body.stokBahan;
+
+  var query = `UPDATE bahan_baku SET namaBahan = '${namaBahan}', stokBahan = '${stokBahan}' WHERE idBahan = '${idBahan}'`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json({ success: true, message: "Update success!" });
+    }
+  });
+};

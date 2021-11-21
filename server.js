@@ -15,7 +15,6 @@ routes(app);
 
 // assign routes from index (middleware)
 app.use("/auth", require("./middleware"));
-app.use("/resep", require("./middleware"));
 
 app.listen(3001, () => {
   console.log(`Server started on port`);
