@@ -70,14 +70,14 @@ exports.login = function (req, res) {
         var token = jwt.sign({ rows }, config.secret, {
           expiresIn: 1440,
         });
-        id_user = rows[0].id;
+        username = rows[0].id;
         var data = {
-          username: id_user,
+          username: username,
           access_token: token,
           ip: ip.address(),
         };
 
-        var query = "INSERT INTO access_token VALUES username";
+        var query = "INSERT ?? SET ?";
         var table = ["access_token"];
 
         query = mysql.format(query, table);
@@ -98,4 +98,8 @@ exports.login = function (req, res) {
       }
     }
   });
+};
+
+exports.requestPage = function (req, res) {
+  response.ok("Ini halaman requests", res);
 };
