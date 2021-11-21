@@ -2,6 +2,7 @@
 
 var response = require("./res");
 var connection = require("./connect");
+var mysql = require("mysql2");
 
 exports.index = function (req, res) {
   response.ok("REST App Working", res);
@@ -40,4 +41,34 @@ exports.showRequests = function (req, res) {
       response.ok(rows, res);
     }
   });
+};
+
+exports.showAllUser = function (req, res) {
+  connection.query("SELECT * FROM user", function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json({
+        success: true,
+        message: "JWT token generated successfully",
+      });
+    }
+  });
+};
+
+exports.showAllReceipe = function (req, res) {
+  var query = "SELECT * FROM resep";
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
+
+// add resep
+exports.addReceipe = function (req, res) {
+  var query = "INSERT INTO resep() VALUES (";
 };

@@ -2,8 +2,11 @@
 
 module.exports = function (app) {
   var myjson = require("./controller");
+  var verification = require("./middleware/verification");
 
   app.route("/").get(myjson.index);
+
+  app.route("/resep").get(myjson.showAllReceipe);
 
   app.route("/dorayaki").get(myjson.showAllDorayaki);
 
