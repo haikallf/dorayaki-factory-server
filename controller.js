@@ -72,3 +72,29 @@ exports.showAllReceipe = function (req, res) {
 exports.addReceipe = function (req, res) {
   var query = "INSERT INTO resep() VALUES (";
 };
+
+exports.showAllIngredients = function (req, res) {
+  var query = "SELECT * FROM bahan_baku";
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
+
+exports.addIngredients = function (req, res) {
+  var namaBahan = req.body.namaBahan;
+  var stokBahan = req.body.stokBahan;
+  var query = `INSERT INTO bahan_baku(namaBahan, stokBahan) VALUES ('${namaBahan}', '${stokBahan}')`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
