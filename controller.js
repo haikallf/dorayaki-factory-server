@@ -156,7 +156,7 @@ exports.sendMail = function (req, res) {
   });
 };
 
-// Requests
+// REQUESTS
 exports.showAllRequests = function (req, res) {
   var query = "SELECT * FROM requests";
   query = mysql.format(query);
