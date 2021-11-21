@@ -6,6 +6,10 @@ module.exports = function (app) {
 
   app.route("/").get(myjson.index);
 
+  app.route("/dorayaki").get(myjson.showAllDorayaki);
+
+  app.route("/dorayaki/:id").get(myjson.showDorayakiDetailById);
+
   app.route("/resep").get(myjson.showAllReceipe);
 
   app.route("/bahan").get(myjson.showAllIngredients);
@@ -16,9 +20,13 @@ module.exports = function (app) {
 
   app.route("/bahan/:id").put(myjson.editIngredients);
 
-  app.route("/dorayaki").get(myjson.showAllDorayaki);
+  app.route("./request").get(myjson.showAllRequests);
 
-  app.route("/dorayaki/:id").get(myjson.showDorayakiDetailById);
+  app.route("./request/:id").get(myjson.showRequestById);
+
+  app.route("./request/:id/accept").get(myjson.setRequestToAcceptById);
+
+  app.route("./request").get(myjson.setRequestToDeclineById);
 
   app.route("/mail").get(myjson.sendMail);
 };
