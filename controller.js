@@ -181,6 +181,32 @@ exports.showPendingRequests = function (req, res) {
   });
 };
 
+exports.setRequestToAcceptById = function (req, res) {
+  var idRequest = req.params.id;
+  var query = `UPDATE requests SET status = 'ACCEPT' WHERE idRequest = ${idRequest}`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
+
+exports.setRequestToDeclineById = function (req, res) {
+  var idRequest = req.params.id;
+  var query = `UPDATE requests SET status = 'DECLINE' WHERE idRequest = ${idRequest}`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};
+
 exports.showRequestsById = function (req, res) {
   var idRequest = req.params.id;
   var query = `SELECT * FROM requests WHERE idRequest = '${idRequest}'`;
