@@ -22,13 +22,13 @@ module.exports = function (app) {
 
   app.route("/bahan/:id/edit").put(myjson.editIngredients);
 
-  app.route("./request").get(myjson.showAllRequests);
+  app.route("/request").get(myjson.showAllRequests);
 
-  app.route("./request/:id").get(myjson.showRequestById);
+  app.route("/request/:id").get(myjson.showRequestById);
 
-  app.route("./request/:id/accept").get(myjson.setRequestToAcceptById);
+  app.route("/request/:id/accept").get(myjson.setRequestToAcceptById);
 
-  app.route("./request").get(myjson.setRequestToDeclineById);
+  app.route("/request").get(myjson.setRequestToDeclineById);
 
   app.route("/mail").get(myjson.sendMail);
 };

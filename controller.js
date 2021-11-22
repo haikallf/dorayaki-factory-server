@@ -170,7 +170,7 @@ exports.sendMail = function (req, res) {
 
 // REQUESTS
 exports.showAllRequests = function (req, res) {
-  var query = "SELECT * FROM requests";
+  var query = "SELECT * FROM request";
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {
