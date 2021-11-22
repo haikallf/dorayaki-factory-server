@@ -182,7 +182,7 @@ exports.showAllRequests = function (req, res) {
 };
 
 exports.showPendingRequests = function (req, res) {
-  var query = "SELECT * FROM requests WHERE status = 'PENDING'";
+  var query = "SELECT * FROM request WHERE status = 'PENDING'";
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {
@@ -195,7 +195,7 @@ exports.showPendingRequests = function (req, res) {
 
 exports.showRequestById = function (req, res) {
   var idRequest = req.params.id;
-  var query = `SELECT * FROM requests WHERE idRequest = '${idRequest}'`;
+  var query = `SELECT * FROM request WHERE idRequest = '${idRequest}'`;
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {
@@ -208,7 +208,7 @@ exports.showRequestById = function (req, res) {
 
 exports.setRequestToAcceptById = function (req, res) {
   var idRequest = req.params.id;
-  var query = `UPDATE requests SET status = 'ACCEPT' WHERE idRequest = ${idRequest}`;
+  var query = `UPDATE request SET status = 'ACCEPT' WHERE idRequest = ${idRequest} AND STATUS = 'PENDING'`;
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {
@@ -221,7 +221,7 @@ exports.setRequestToAcceptById = function (req, res) {
 
 exports.setRequestToDeclineById = function (req, res) {
   var idRequest = req.params.id;
-  var query = `UPDATE requests SET status = 'DECLINE' WHERE idRequest = ${idRequest}`;
+  var query = `UPDATE request SET status = 'DECLINE' WHERE idRequest = ${idRequest} AND STATUS = 'PENDING'`;
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {

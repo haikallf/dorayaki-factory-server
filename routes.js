@@ -24,9 +24,13 @@ module.exports = function (app) {
 
   app.route("/request").get(myjson.showAllRequests);
 
+  app.route("/request/pending").get(myjson.showPendingRequests);
+
   app.route("/request/:id").get(myjson.showRequestById);
 
-  app.route("/request/:id/accept").get(myjson.setRequestToAcceptById);
+  app.route("/request/:id/accept").post(myjson.setRequestToAcceptById);
+
+  app.route("/request/:id/decline").post(myjson.setRequestToDeclineById);
 
   app.route("/request").get(myjson.setRequestToDeclineById);
 
