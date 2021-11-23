@@ -18,7 +18,7 @@ module.exports = function (app) {
 
   app.route("/tambahbahan").post(myjson.addIngredients);
 
-  app.route("/bahan/:id").get(myjson.showIngredientDetailsById);
+  app.route("/getbahan/:id").get(myjson.showIngredientDetailsById);
 
   app.route("/bahan/:id/edit").put(myjson.editIngredients);
 
