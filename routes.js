@@ -8,6 +8,8 @@ module.exports = function (app) {
 
   app.route("/dorayaki").get(myjson.showAllDorayaki);
 
+  app.route("/tambahdorayaki").post(myjson.addDorayaki);
+
   app.route("/dorayaki/:id").get(myjson.showDorayakiDetailById);
 
   app.route("/resep").get(myjson.showAllReceipe);

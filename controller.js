@@ -16,7 +16,7 @@ exports.showAllDorayaki = function (req, res) {
     if (error) {
       console.log(error);
     } else {
-      response.ok(rows, res);
+      res.json(rows);
     }
   });
 };
@@ -29,10 +29,22 @@ exports.showDorayakiDetailById = function (req, res) {
       if (error) {
         console.log(error);
       } else {
-        response.ok(rows, res);
+        res.json(rows);
       }
     }
   );
+};
+
+exports.addDorayaki = function (req, res) {
+  var namaDorayaki = req.body.namaDorayaki;
+  var query = `INSERT INTO item(nama) VALUES ('${namaDorayaki}')`;
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
 };
 
 // exports.showRequests = function (req, res) {
