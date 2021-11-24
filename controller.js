@@ -3,11 +3,121 @@
 var response = require("./res");
 var connection = require("./connect");
 var mysql = require("mysql2");
+// var bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-const { options } = require("./middleware");
+// const saltRounds = 10;
+var md5 = require("md5");
+var jwt = require("jsonwebtoken");
 
 exports.index = function (req, res) {
   response.ok("REST App Working", res);
+};
+
+// AUTH
+exports.registration = function (req, res) {
+  let username = req.body.username;
+  let email = req.body.email;
+  let password = md5(req.body.password);
+  let name_ = req.body.name;
+
+  var query = `SELECT * FROM user WHERE username = '${username}'`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      if (rows.length == 0) {
+        var query2 = `SELECT * FROM user WHERE email = '${email}'`;
+        query2 = mysql.format(query2);
+        connection.query(query2, function (error, rows2) {
+          if (error) {
+            console.log(error);
+          } else {
+            if (rows2.length == 0) {
+              // username dan email kosong
+              var query3 = `INSERT INTO user(username, email, name, password) VALUES ('${username}', '${email}', '${name_}', '${password}')`;
+              query3 = mysql.format(query3);
+              connection.query(query3, function (error, rows3) {
+                if (error) {
+                  console.log(error);
+                } else {
+                  // res.send(rows3);
+                  res.send({ message: "Registration success!" });
+                }
+              });
+            } else {
+              res.send({ message: "Email is already used!" });
+            }
+          }
+        });
+      } else {
+        // cek email
+        var query4 = `SELECT * FROM user WHERE email = '${email}'`;
+        query4 = mysql.format(query4);
+        connection.query(query4, function (error, rows4) {
+          if (error) {
+            console.log(error);
+          } else {
+            // kosong --> username isi
+            if (rows4.length == 0) {
+              res.send({ message: "Username is already used!" });
+            } else {
+              // isi --> username dan email isi
+              res.send({ message: "Username and email is already used!" });
+            }
+          }
+        });
+      }
+    }
+  });
+};
+
+exports.login = function (req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  var query = `SELECT * FROM user WHERE username='${username}'`;
+
+  connection.query(query, function (err, rows) {
+    if (err) {
+      console.log(error);
+    }
+    if (rows.length > 0) {
+      if (rows[0].password == md5(password)) {
+        const username = rows[0].username;
+        const token = jwt.sign({ username }, "jwtsecret", {
+          expiresIn: 300,
+        });
+        req.session.user = rows;
+        console.log(req.session.user);
+        res.json({ auth: true, token: token, result: rows[0] });
+      } else {
+        res.send({ message: "Wrong username or password!" });
+      }
+    } else {
+      res.send({ message: "Username not found!" });
+    }
+  });
+};
+
+exports.verifyJWT = function (req, res, next) {
+  const token = req.headers("x-access-token");
+  if (!token) {
+    res.send("We need a token");
+  } else {
+    jwt.verify(token, "sekut", (err, decoded) => {
+      if (err) {
+        res.json({ auth: false, message: "Authentication failed!" });
+      } else {
+        req.userId = decoded.id;
+        next();
+      }
+    });
+  }
+};
+
+exports.authtest = function (req, res) {
+  res.send("You are authenticated");
 };
 
 // DORAYAKI
@@ -37,7 +147,7 @@ exports.showDorayakiDetailById = function (req, res) {
 
 exports.addDorayaki = function (req, res) {
   var namaDorayaki = req.body.namaDorayaki;
-  var query = `INSERT INTO item(nama) VALUES ('${namaDorayaki}')`;
+  var query = `INSERT INTO item (nama) VALUES ('${namaDorayaki}')`;
   connection.query(query, function (error, rows) {
     if (error) {
       console.log(error);

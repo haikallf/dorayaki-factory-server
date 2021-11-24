@@ -1,6 +1,7 @@
 var connection = require("../connect");
 var mysql = require("mysql2");
 var md5 = require("md5");
+
 var response = require("../res");
 var jwt = require("jsonwebtoken");
 var config = require("../config/secret");
@@ -100,6 +101,6 @@ exports.login = function (req, res) {
   });
 };
 
-exports.requestPage = function (req, res) {
-  response.ok("Ini halaman requests", res);
-};
+// exports.requestPage = function (req, res) {
+//   response.ok("Ini halaman requests", res);
+// };

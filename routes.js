@@ -3,9 +3,14 @@
 module.exports = function (app) {
   var myjson = require("./controller");
 
-  var verification = require("./middleware/verification");
+  // var verification = require("./middleware/verification");
+  // var auth = require("./auth");
 
   app.route("/").get(myjson.index);
+
+  app.route("/login").post(myjson.login);
+  app.route("/register").post(myjson.registration);
+  app.route("/authtest").get(myjson.authtest, myjson.verifyJWT);
 
   app.route("/dorayaki").get(myjson.showAllDorayaki);
   app.route("/tambahdorayaki").post(myjson.addDorayaki);
