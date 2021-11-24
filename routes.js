@@ -8,9 +8,10 @@ module.exports = function (app) {
 
   app.route("/").get(myjson.index);
 
+  app.route("/login").get(myjson.isLogin);
   app.route("/login").post(myjson.login);
   app.route("/register").post(myjson.registration);
-  app.route("/authtest").get(myjson.authtest, myjson.verifyJWT);
+  app.route("/authtest", myjson.verifyJWT).get(myjson.authtest);
 
   app.route("/dorayaki").get(myjson.showAllDorayaki);
   app.route("/tambahdorayaki").post(myjson.addDorayaki);

@@ -9,7 +9,7 @@ var md5 = require("md5");
 var jwt = require("jsonwebtoken");
 
 // Parse app/json
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));

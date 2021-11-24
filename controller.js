@@ -89,15 +89,23 @@ exports.login = function (req, res) {
           expiresIn: 300,
         });
         req.session.user = rows;
-        console.log(req.session.user);
-        res.json({ auth: true, token: token, result: rows[0] });
+        // console.log(req.session.user);
+        res.json({ auth: true, token: token, result: rows });
       } else {
-        res.send({ message: "Wrong username or password!" });
+        res.json({ auth: false, message: "Wrong username or password!" });
       }
     } else {
-      res.send({ message: "Username not found!" });
+      res.json({ auth: false, message: "Username not found!" });
     }
   });
+};
+
+exports.isLogin = function (req, res) {
+  if (req.session.user) {
+    res.send({ loggedIn: true, user: req.session.user });
+  } else {
+    res.send({ loggedIn: false });
+  }
 };
 
 exports.verifyJWT = function (req, res, next) {
