@@ -13,7 +13,7 @@ module.exports = function (app) {
   app.route("/register").post(myjson.registration);
   app.route("/authtest", myjson.verifyJWT).get(myjson.authtest);
 
-  app.route("/dorayaki").get(myjson.showAllDorayaki);
+  app.route("/dorayaki", myjson.verifyJWT).get(myjson.showAllDorayaki);
   app.route("/tambahdorayaki").post(myjson.addDorayaki);
   app.route("/dorayaki/:id").get(myjson.showDorayakiDetailById);
 
