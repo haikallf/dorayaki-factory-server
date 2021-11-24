@@ -1,12 +1,13 @@
-const e = require("express");
+const express = require("express");
 const { verify } = require("jsonwebtoken");
 
 const validateToken = (req, res, next) => {
-  console.log(req.headers["Authorization"]);
-  const accessToken = req.headers["Authorization"];
+  console.log(req.headers["authorization"]);
+  const accessToken = req.headers["authorization"];
 
   if (!accessToken) {
     res.json({ error: "User not logged in!" });
+    // return next();
   } else {
     try {
       const validToken = verify(accessToken, "jwtsecret");

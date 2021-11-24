@@ -4,6 +4,7 @@ module.exports = function (app) {
   var myjson = require("./controller");
 
   // var verification = require("./middleware/verification");
+  const { validateToken } = require("./middleware/AuthMiddleware");
   // var auth = require("./auth");
 
   app.route("/").get(myjson.index);
@@ -13,7 +14,7 @@ module.exports = function (app) {
   app.route("/register").post(myjson.registration);
   app.route("/authtest", myjson.verifyJWT).get(myjson.authtest);
 
-  app.route("/dorayaki", myjson.verifyJWT).get(myjson.showAllDorayaki);
+  app.use(validateToken).route("/dorayaki").post(myjson.showAllDorayaki);
   app.route("/tambahdorayaki").post(myjson.addDorayaki);
   app.route("/dorayaki/:id").get(myjson.showDorayakiDetailById);
 
