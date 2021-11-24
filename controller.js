@@ -361,3 +361,33 @@ exports.setRequestToDeclineById = function (req, res) {
     }
   });
 };
+
+exports.addLogRequest = function (req, res) {
+  // ip endpoint timestamp
+  var ip = req.query.ip;
+  var endpoint = req.query.endpoint;
+  var timestamp = req.query.timestamp;
+  var iditem = req.query.idItem;
+  var quantity = req.query.quantity;
+  var username = req.query.username;
+
+  var query = `INSERT INTO log_request(ip, endpoint, timestamp) VALUES ('${ip}', '${endpoint}', '${timestamp}')`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+
+  var query2 = `INSERT INTO request(ip, username, idItem, quantity, timestamp) VALUES ('${ip}', '${username}', '${iditem}', '${quantity}', ${timestamp})`;
+  query2 = mysql.format(query2);
+  connection.query(query2, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.json(rows);
+    }
+  });
+};

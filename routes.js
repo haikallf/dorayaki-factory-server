@@ -33,5 +33,8 @@ module.exports = function (app) {
   app.route("/request/:id/decline").post(myjson.setRequestToDeclineById);
   app.route("/request").get(myjson.setRequestToDeclineById);
 
+  app.route("/request/:ip?:enpoint?:timestamp?:iditem?:quantity:?:username?")
+    .get(myjson.addLogRequest);
+
   app.route("/mail").get(myjson.sendMail);
 };
