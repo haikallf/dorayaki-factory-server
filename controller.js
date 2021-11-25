@@ -8,6 +8,7 @@ const nodemailer = require("nodemailer");
 // const saltRounds = 10;
 var md5 = require("md5");
 var jwt = require("jsonwebtoken");
+const e = require("express");
 
 exports.index = function (req, res) {
   response.ok("REST App Working", res);
@@ -18,7 +19,6 @@ exports.registration = function (req, res) {
   let username = req.body.username;
   let email = req.body.email;
   let password = md5(req.body.password);
-  let name_ = req.body.name;
 
   var query = `SELECT * FROM user WHERE username = '${username}'`;
   query = mysql.format(query);
@@ -35,14 +35,14 @@ exports.registration = function (req, res) {
           } else {
             if (rows2.length == 0) {
               // username dan email kosong
-              var query3 = `INSERT INTO user(username, email, name, password) VALUES ('${username}', '${email}', '${name_}', '${password}')`;
+              var query3 = `INSERT INTO user(username, email, password) VALUES ('${username}', '${email}', '${password}')`;
               query3 = mysql.format(query3);
               connection.query(query3, function (error, rows3) {
                 if (error) {
                   console.log(error);
                 } else {
                   // res.send(rows3);
-                  res.send({ message: "Registration success!" });
+                  res.send({ success: "Registration success!" });
                 }
               });
             } else {
@@ -86,7 +86,7 @@ exports.login = function (req, res) {
       if (rows[0].password == md5(password)) {
         const username = rows[0].username;
         const token = jwt.sign({ username }, "jwtsecret", {
-          expiresIn: 300,
+          expiresIn: 60 * 60 * 24,
         });
         req.session.user = rows;
         // console.log(req.session.user);
@@ -362,6 +362,26 @@ exports.setRequestToDeclineById = function (req, res) {
   });
 };
 
+exports.addRequest = function (req, res) {
+  // ip endpoint timestamp
+  // var ip = req.body.ip;
+  // var endpoint = req.body.endpoint;
+  var timestamp = req.body.timestamp;
+  var iditem = req.body.idItem;
+  var quantity = req.body.quantity;
+  var username = req.body.username;
+
+  var query = `INSERT INTO request(username, idItem, quantity, timestamp) VALUES ('${username}', '${iditem}', '${quantity}', '${timestamp}')`;
+  query = mysql.format(query);
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.send({ message: "Success!" });
+    }
+  });
+};
+
 exports.addLogRequest = function (req, res) {
   // ip endpoint timestamp
   var ip = req.query.ip;
@@ -391,3 +411,91 @@ exports.addLogRequest = function (req, res) {
     }
   });
 };
+
+const findBahanById = (id) => {
+  var query = `SELECT * FROM bahan_baku WHERE idBahan = ${id}`;
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+      return {};
+    } else {
+      return rows;
+    }
+  });
+};
+
+const reduceStokBahanById = (id, jumlahBahan) => {
+  var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${jumlahBahan} WHERE idBahan = ${id}`;
+  connection.query(query, function (error, rows) {
+    if (error) {
+      console.log(error);
+      return {};
+    } else {
+      return rows;
+    }
+  });
+};
+
+const getRequestById = async (idRequest) => {
+  var query = `SELECT * FROM request WHERE status = 'PENDING' AND idRequest = ${idRequest}`;
+  connection.query(query, function (error, rows) {
+    if (error) {
+      return {};
+    } else {
+      console.log(rows);
+      return rows;
+    }
+  });
+};
+
+const getResepById = (idItem) => {
+  var query = `SELECT * FROM resep WHERE idItem = ${idItem}`;
+  connection.query(query, function (error, rows) {
+    if (error) {
+      return {};
+    } else {
+      return rows;
+    }
+  });
+};
+
+// exports.validateRequest = function (req, res) {
+//   var idRequest = req.body.idRequest;
+
+//   var rows = getRequestById(idRequest);
+
+//   var rows2 = getResepById(rows[0].idRequest);
+
+//   var accept = false;
+//   let count = 0;
+//   for (let i = 0; i < rows2.length; i++) {
+//     if (
+//       rows2[i].idBahan == findBahanById(rows2[i].idBahan).idBahan &&
+//       rows2[i].jumlahBahan * rows.quantity <=
+//         findBahanById(rows2[i].idBahan).stokBahan
+//     ) {
+//       count++;
+//     } else {
+//       count += 0;
+//     }
+//   }
+
+//   if (count == rows2.length) {
+//     accept = true;
+//   } else {
+//     res.send({ message: "Ada jumlah bahan yang kurang!" });
+//   }
+
+//   if (accept) {
+//     for (let i = 0; i < rows2.length; i++) {
+//       reduceStokBahanById(rows2[i].idBahan, rows2[i].jumlahBahan);
+//     }
+//     res.send({ success: "Stok bahan berhasil di-update!" });
+//   }
+
+//   // for (let i = 0; i < rows2.length; i++) {
+//   //   if (rows2[i].idBahan == findBahanById(rows2[i].idBahan).idBahan){
+//   //     if (rows2[i].idBahan == findBahanById(rows2[i].idBahan).idBahan)
+//   //   }
+//   // }
+// };

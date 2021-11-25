@@ -43,6 +43,8 @@ module.exports = function (app) {
   app.route("/request/:id/accept").post(myjson.setRequestToAcceptById);
   app.route("/request/:id/decline").post(myjson.setRequestToDeclineById);
   app.route("/request").get(myjson.setRequestToDeclineById);
+  app.route("/tambahrequest").post(myjson.addRequest);
+  app.route("/acceptrequest").post(myjson.validateRequest);
 
   app
     .route("/request/:ip?:enpoint?:timestamp?:iditem?:quantity:?:username?")
