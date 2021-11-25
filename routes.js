@@ -1,5 +1,16 @@
 "use strict";
 
+// Get varian yang disediain sama factory
+// Call ke soap client, trus ngehit rest api yang ada di backend
+
+// Udah dapet varian, trus req
+// Manggil operation buat ngirim req, trus soapnya ngehit rest apinya buat bikin req baru
+
+// Ngecek apakah requestnya udah di approve atau belum sama admin factory
+// CRON job untuk berapa jam sekali untuk minta status request, minta ke sop, soap ke backend pake get, si soapnya balikin lagi ke toko si toko update stok di dbnya
+
+// Si tokonya minta ke soap, dicek udah limit atau belum, kalau udah, return error
+
 module.exports = function (app) {
   var myjson = require("./controller");
 
@@ -9,12 +20,12 @@ module.exports = function (app) {
 
   app.route("/").get(myjson.index);
 
-  app.route("/login").get(myjson.isLogin);
+  // app.route("/login").get(myjson.isLogin);
   app.route("/login").post(myjson.login);
   app.route("/register").post(myjson.registration);
-  app.route("/authtest", myjson.verifyJWT).get(myjson.authtest);
+  // app.route("/authtest").get(myjson.authtest);
 
-  app.use(validateToken).route("/dorayaki").post(myjson.showAllDorayaki);
+  app.route("/dorayaki").get(myjson.showAllDorayaki);
   app.route("/tambahdorayaki").post(myjson.addDorayaki);
   app.route("/dorayaki/:id").get(myjson.showDorayakiDetailById);
 
@@ -33,7 +44,8 @@ module.exports = function (app) {
   app.route("/request/:id/decline").post(myjson.setRequestToDeclineById);
   app.route("/request").get(myjson.setRequestToDeclineById);
 
-  app.route("/request/:ip?:enpoint?:timestamp?:iditem?:quantity:?:username?")
+  app
+    .route("/request/:ip?:enpoint?:timestamp?:iditem?:quantity:?:username?")
     .get(myjson.addLogRequest);
 
   app.route("/mail").get(myjson.sendMail);

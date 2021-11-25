@@ -124,9 +124,9 @@ exports.verifyJWT = function (req, res, next) {
   }
 };
 
-exports.authtest = function (req, res) {
-  res.send("You are authenticated");
-};
+// exports.authtest = function (req, res) {
+//   res.send("You are authenticated");
+// };
 
 // DORAYAKI
 exports.showAllDorayaki = function (req, res) {
@@ -165,16 +165,16 @@ exports.addDorayaki = function (req, res) {
   });
 };
 
-// exports.showRequests = function (req, res) {
-//   let id = req.params.id;
-//   connection.query("SELECT * FROM requests", function (error, rows) {
-//     if (error) {
-//       console.log(error);
-//     } else {
-//       response.ok(rows, res);
-//     }
-//   });
-// };
+exports.showRequests = function (req, res) {
+  let id = req.params.id;
+  connection.query("SELECT * FROM requests", function (error, rows) {
+    if (error) {
+      console.log(error);
+    } else {
+      response.ok(rows, res);
+    }
+  });
+};
 
 exports.showAllUser = function (req, res) {
   connection.query("SELECT * FROM user", function (error, rows) {

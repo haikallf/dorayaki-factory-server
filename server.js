@@ -7,6 +7,7 @@ const app = express();
 var connection = require("./connect");
 var md5 = require("md5");
 var jwt = require("jsonwebtoken");
+var mysql = require("mysql2");
 
 // Parse app/json
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
@@ -27,6 +28,7 @@ app.use(
 
 // call routes
 var routes = require("./routes");
+const { validateToken } = require("./middleware/AuthMiddleware");
 routes(app);
 
 // assign routes from index (middleware)
@@ -35,6 +37,22 @@ routes(app);
 app.listen(3001, () => {
   console.log(`Server started on port`);
 });
+
+app.post("/authtest", validateToken, (req, res) => {
+  res.send("You are authenticated");
+});
+
+// app.get("/bahan", (req, res) => {
+//   var query = "SELECT * FROM bahan_baku";
+//   query = mysql.format(query);
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       console.log(error);
+//     } else {
+//       res.json(rows);
+//     }
+//   });
+// });
 
 // app.post("/login", (req, res) => {
 //   const username = req.body.username;
