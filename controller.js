@@ -312,7 +312,7 @@ exports.showAllRequests = function (req, res) {
 };
 
 exports.showPendingRequests = function (req, res) {
-  var query = "SELECT * FROM request WHERE status = 'PENDING'";
+  var query = "SELECT * FROM request WHERE status = 0";
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {
@@ -338,7 +338,7 @@ exports.showRequestById = function (req, res) {
 
 exports.setRequestToAcceptById = function (req, res) {
   var idRequest = req.params.id;
-  var query = `UPDATE request SET status = 'ACCEPT' WHERE idRequest = ${idRequest} AND STATUS = 'PENDING'`;
+  var query = `UPDATE request SET status = 1 WHERE idRequest = ${idRequest} AND STATUS = 0`;
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {
@@ -351,7 +351,7 @@ exports.setRequestToAcceptById = function (req, res) {
 
 exports.setRequestToDeclineById = function (req, res) {
   var idRequest = req.params.id;
-  var query = `UPDATE request SET status = 'DECLINE' WHERE idRequest = ${idRequest} AND STATUS = 'PENDING'`;
+  var query = `UPDATE request SET status = -1 WHERE idRequest = ${idRequest} AND STATUS = 0`;
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {
@@ -412,91 +412,91 @@ exports.addLogRequest = function (req, res) {
   });
 };
 
-const findBahanById = (id) => {
-  var query = `SELECT * FROM bahan_baku WHERE idBahan = ${id}`;
-  connection.query(query, function (error, rows) {
-    if (error) {
-      console.log(error);
-      return {};
-    } else {
-      return rows;
-    }
-  });
-};
+// const findBahanById = (id) => {
+//   var query = `SELECT * FROM bahan_baku WHERE idBahan = ${id}`;
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       console.log(error);
+//       return {};
+//     } else {
+//       return rows;
+//     }
+//   });
+// };
 
-const reduceStokBahanById = (id, jumlahBahan) => {
-  var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${jumlahBahan} WHERE idBahan = ${id}`;
-  connection.query(query, function (error, rows) {
-    if (error) {
-      console.log(error);
-      return {};
-    } else {
-      return rows;
-    }
-  });
-};
+// const reduceStokBahanById = (id, jumlahBahan) => {
+//   var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${jumlahBahan} WHERE idBahan = ${id}`;
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       console.log(error);
+//       return {};
+//     } else {
+//       return rows;
+//     }
+//   });
+// };
 
-const getRequestById = async (idRequest) => {
-  var query = `SELECT * FROM request WHERE status = 'PENDING' AND idRequest = ${idRequest}`;
-  connection.query(query, function (error, rows) {
-    if (error) {
-      return {};
-    } else {
-      console.log(rows);
-      return rows;
-    }
-  });
-};
+// const getRequestById = async (idRequest) => {
+//   var query = `SELECT * FROM request WHERE status = 'PENDING' AND idRequest = ${idRequest}`;
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       return {};
+//     } else {
+//       console.log(rows);
+//       return rows;
+//     }
+//   });
+// };
 
-const getResepById = (idItem) => {
-  var query = `SELECT * FROM resep WHERE idItem = ${idItem}`;
-  connection.query(query, function (error, rows) {
-    if (error) {
-      return {};
-    } else {
-      return rows;
-    }
-  });
-};
+// const getResepById = (idItem) => {
+//   var query = `SELECT * FROM resep WHERE idItem = ${idItem}`;
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       return {};
+//     } else {
+//       return rows;
+//     }
+//   });
+// };
 
-const getAllRecordsForRequestByIdRequest = (idRequest) => {
-  var idRequest = req.body.idRequest;
-  var query = `SELECT idRequest, idItem, quantity, idBahan, jumlahBahan, stokBahan FROM request NATURAL JOIN resep NATURAL JOIN bahan_baku WHERE idRequest = ${idRequest}`;
-  connection.query(query, function (error, reqData) {
-    if (error) {
-      console.log(error);
-      return [];
-    } else {
-      let count = 0;
+// const getAllRecordsForRequestByIdRequest = (idRequest) => {
+//   var idRequest = req.body.idRequest;
+//   var query = `SELECT idRequest, idItem, quantity, idBahan, jumlahBahan, stokBahan FROM request NATURAL JOIN resep NATURAL JOIN bahan_baku WHERE idRequest = ${idRequest}`;
+//   connection.query(query, function (error, reqData) {
+//     if (error) {
+//       console.log(error);
+//       return [];
+//     } else {
+//       let count = 0;
 
-      for (let i = 0; i < reqData.length; i++) {
-        if (
-          reqData[i].jumlahBahan * reqData[i].jumlahBahan <=
-          reqData[i].stokBahan
-        ) {
-          count++;
-        }
-      }
+//       for (let i = 0; i < reqData.length; i++) {
+//         if (
+//           reqData[i].jumlahBahan * reqData[i].jumlahBahan <=
+//           reqData[i].stokBahan
+//         ) {
+//           count++;
+//         }
+//       }
 
-      if (count == reqData.length) {
-        res.send({ success: "Bisa di acc" });
-        for (let i = 0; i < reqData.length; i++) {
-          var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${
-            reqData[i].jumlahBahan * reqData[i].quantity
-          } WHERE idBahan = ${reqData[i].idBahan}`;
-          connection.query(query, function (error, rows) {
-            if (error) {
-              console.log(error);
-              return {};
-            } else {
-              return rows;
-            }
-          });
-        }
-      }
-    }
-  });
-};
+//       if (count == reqData.length) {
+//         res.send({ success: "Bisa di acc" });
+//         for (let i = 0; i < reqData.length; i++) {
+//           var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${
+//             reqData[i].jumlahBahan * reqData[i].quantity
+//           } WHERE idBahan = ${reqData[i].idBahan}`;
+//           connection.query(query, function (error, rows) {
+//             if (error) {
+//               console.log(error);
+//               return {};
+//             } else {
+//               return rows;
+//             }
+//           });
+//         }
+//       }
+//     }
+//   });
+// };
 
 exports.validateRequest = function (req, res) {
   var idRequest = req.body.idRequest;
