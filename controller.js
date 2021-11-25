@@ -14,6 +14,21 @@ exports.index = function (req, res) {
   response.ok("REST App Working", res);
 };
 
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: "polarisgray4@gmail.com",
+    pass: "Haikallf-17",
+  },
+});
+
+const emailDetails = {
+  from: "polarisgray4@gmail.com",
+  to: "haikalfadil68@gmail.com",
+  subject: "Penambahan Stok Dorayaki",
+  text: "Halo Admin, ada request penambahan stok dorayaki ya.",
+};
+
 // AUTH
 exports.registration = function (req, res) {
   let username = req.body.username;
@@ -272,32 +287,6 @@ exports.showIngredientDetailsById = function (req, res) {
   });
 };
 
-// EMAIL
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: "polarisgray4@gmail.com",
-    pass: "Haikallf-17",
-  },
-});
-
-const emailDetails = {
-  from: "polarisgray4@gmail.com",
-  to: "haikalfadil68@gmail.com",
-  subject: "Penambahan Stok Dorayaki",
-  text: "Halo Admin, ada request penambahan stok dorayaki ya.",
-};
-
-exports.sendMail = function (req, res) {
-  transporter.sendMail(emailDetails, function (err, info) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(info.response);
-    }
-  });
-};
-
 // REQUESTS
 exports.showAllRequests = function (req, res) {
   var query = "SELECT * FROM request";
@@ -377,6 +366,7 @@ exports.addRequest = function (req, res) {
     if (error) {
       console.log(error);
     } else {
+      transporter.sendMail(emailDetails);
       res.send({ message: "Success!" });
     }
   });
@@ -412,88 +402,13 @@ exports.addLogRequest = function (req, res) {
   });
 };
 
-// const findBahanById = (id) => {
-//   var query = `SELECT * FROM bahan_baku WHERE idBahan = ${id}`;
-//   connection.query(query, function (error, rows) {
-//     if (error) {
-//       console.log(error);
-//       return {};
+// // EMAIL
+// exports.sendMail = function (req, res) {
+//   transporter.sendMail(emailDetails, function (err, info) {
+//     if (err) {
+//       console.log(err);
 //     } else {
-//       return rows;
-//     }
-//   });
-// };
-
-// const reduceStokBahanById = (id, jumlahBahan) => {
-//   var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${jumlahBahan} WHERE idBahan = ${id}`;
-//   connection.query(query, function (error, rows) {
-//     if (error) {
-//       console.log(error);
-//       return {};
-//     } else {
-//       return rows;
-//     }
-//   });
-// };
-
-// const getRequestById = async (idRequest) => {
-//   var query = `SELECT * FROM request WHERE status = 'PENDING' AND idRequest = ${idRequest}`;
-//   connection.query(query, function (error, rows) {
-//     if (error) {
-//       return {};
-//     } else {
-//       console.log(rows);
-//       return rows;
-//     }
-//   });
-// };
-
-// const getResepById = (idItem) => {
-//   var query = `SELECT * FROM resep WHERE idItem = ${idItem}`;
-//   connection.query(query, function (error, rows) {
-//     if (error) {
-//       return {};
-//     } else {
-//       return rows;
-//     }
-//   });
-// };
-
-// const getAllRecordsForRequestByIdRequest = (idRequest) => {
-//   var idRequest = req.body.idRequest;
-//   var query = `SELECT idRequest, idItem, quantity, idBahan, jumlahBahan, stokBahan FROM request NATURAL JOIN resep NATURAL JOIN bahan_baku WHERE idRequest = ${idRequest}`;
-//   connection.query(query, function (error, reqData) {
-//     if (error) {
-//       console.log(error);
-//       return [];
-//     } else {
-//       let count = 0;
-
-//       for (let i = 0; i < reqData.length; i++) {
-//         if (
-//           reqData[i].jumlahBahan * reqData[i].jumlahBahan <=
-//           reqData[i].stokBahan
-//         ) {
-//           count++;
-//         }
-//       }
-
-//       if (count == reqData.length) {
-//         res.send({ success: "Bisa di acc" });
-//         for (let i = 0; i < reqData.length; i++) {
-//           var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${
-//             reqData[i].jumlahBahan * reqData[i].quantity
-//           } WHERE idBahan = ${reqData[i].idBahan}`;
-//           connection.query(query, function (error, rows) {
-//             if (error) {
-//               console.log(error);
-//               return {};
-//             } else {
-//               return rows;
-//             }
-//           });
-//         }
-//       }
+//       res.json(info.response);
 //     }
 //   });
 // };
@@ -598,4 +513,90 @@ exports.validateRequest = function (req, res) {
 //   //     if (rows2[i].idBahan == findBahanById(rows2[i].idBahan).idBahan)
 //   //   }
 //   // }
+// };
+
+// const findBahanById = (id) => {
+//   var query = `SELECT * FROM bahan_baku WHERE idBahan = ${id}`;
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       console.log(error);
+//       return {};
+//     } else {
+//       return rows;
+//     }
+//   });
+// };
+
+// const reduceStokBahanById = (id, jumlahBahan) => {
+//   var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${jumlahBahan} WHERE idBahan = ${id}`;
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       console.log(error);
+//       return {};
+//     } else {
+//       return rows;
+//     }
+//   });
+// };
+
+// const getRequestById = async (idRequest) => {
+//   var query = `SELECT * FROM request WHERE status = 'PENDING' AND idRequest = ${idRequest}`;
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       return {};
+//     } else {
+//       console.log(rows);
+//       return rows;
+//     }
+//   });
+// };
+
+// const getResepById = (idItem) => {
+//   var query = `SELECT * FROM resep WHERE idItem = ${idItem}`;
+//   connection.query(query, function (error, rows) {
+//     if (error) {
+//       return {};
+//     } else {
+//       return rows;
+//     }
+//   });
+// };
+
+// const getAllRecordsForRequestByIdRequest = (idRequest) => {
+//   var idRequest = req.body.idRequest;
+//   var query = `SELECT idRequest, idItem, quantity, idBahan, jumlahBahan, stokBahan FROM request NATURAL JOIN resep NATURAL JOIN bahan_baku WHERE idRequest = ${idRequest}`;
+//   connection.query(query, function (error, reqData) {
+//     if (error) {
+//       console.log(error);
+//       return [];
+//     } else {
+//       let count = 0;
+
+//       for (let i = 0; i < reqData.length; i++) {
+//         if (
+//           reqData[i].jumlahBahan * reqData[i].jumlahBahan <=
+//           reqData[i].stokBahan
+//         ) {
+//           count++;
+//         }
+//       }
+
+//       if (count == reqData.length) {
+//         res.send({ success: "Bisa di acc" });
+//         for (let i = 0; i < reqData.length; i++) {
+//           var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${
+//             reqData[i].jumlahBahan * reqData[i].quantity
+//           } WHERE idBahan = ${reqData[i].idBahan}`;
+//           connection.query(query, function (error, rows) {
+//             if (error) {
+//               console.log(error);
+//               return {};
+//             } else {
+//               return rows;
+//             }
+//           });
+//         }
+//       }
+//     }
+//   });
 // };

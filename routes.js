@@ -46,10 +46,5 @@ module.exports = function (app) {
   app.route("/tambahrequest").post(myjson.addRequest);
   app.route("/acceptrequest").post(myjson.validateRequest);
   // app.route("/getrequestdata").get(myjson.getAllRecordsForRequestByIdRequest);
-
-  app
-    .route("/request/:ip?:enpoint?:timestamp?:iditem?:quantity:?:username?")
-    .get(myjson.addLogRequest);
-
-  app.route("/mail").get(myjson.sendMail);
+  // app.route("/mail").get(myjson.sendMail);
 };
