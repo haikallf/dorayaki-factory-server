@@ -2,7 +2,7 @@ const express = require("express");
 const { verify } = require("jsonwebtoken");
 
 const validateToken = (req, res, next) => {
-  console.log(req.headers["authorization"]);
+  // console.log(req.headers["authorization"]);
   const accessToken = req.headers["authorization"];
 
   if (!accessToken) {
