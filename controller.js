@@ -371,7 +371,7 @@ exports.addRequest = function (req, res) {
   var quantity = req.body.quantity;
   var username = req.body.username;
 
-  var query = `INSERT INTO request(username, idItem, quantity, timestamp) VALUES ('${username}', '${iditem}', '${quantity}', '${timestamp}')`;
+  var query = `INSERT INTO request(username, idItem, quantity, timestamp) VALUES ('${username}', ${iditem}, ${quantity}, '${timestamp}')`;
   query = mysql.format(query);
   connection.query(query, function (error, rows) {
     if (error) {
@@ -458,6 +458,106 @@ const getResepById = (idItem) => {
     }
   });
 };
+
+const getAllRecordsForRequestByIdRequest = (idRequest) => {
+  var idRequest = req.body.idRequest;
+  var query = `SELECT idRequest, idItem, quantity, idBahan, jumlahBahan, stokBahan FROM request NATURAL JOIN resep NATURAL JOIN bahan_baku WHERE idRequest = ${idRequest}`;
+  connection.query(query, function (error, reqData) {
+    if (error) {
+      console.log(error);
+      return [];
+    } else {
+      let count = 0;
+
+      for (let i = 0; i < reqData.length; i++) {
+        if (
+          reqData[i].jumlahBahan * reqData[i].jumlahBahan <=
+          reqData[i].stokBahan
+        ) {
+          count++;
+        }
+      }
+
+      if (count == reqData.length) {
+        res.send({ success: "Bisa di acc" });
+        for (let i = 0; i < reqData.length; i++) {
+          var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${
+            reqData[i].jumlahBahan * reqData[i].quantity
+          } WHERE idBahan = ${reqData[i].idBahan}`;
+          connection.query(query, function (error, rows) {
+            if (error) {
+              console.log(error);
+              return {};
+            } else {
+              return rows;
+            }
+          });
+        }
+      }
+    }
+  });
+};
+
+exports.validateRequest = function (req, res) {
+  var idRequest = req.body.idRequest;
+  // var query = `SELECT idRequest, rq.idItem, quantity, rs.idBahan, jumlahBahan, stokBahan FROM request rq INNER JOIN resep rp ON rs.idItem = rq.idItem INNER JOIN bahan_baku b ON rs.idBahan = b.idBahan WHERE rq.idRequest = ${idRequest}`;
+  var query = `SELECT idRequest, idItem, quantity, idBahan, jumlahBahan, stokBahan FROM request NATURAL JOIN resep NATURAL JOIN bahan_baku WHERE idRequest = ${idRequest}`;
+  connection.query(query, function (error, reqData) {
+    if (error) {
+      console.log(error);
+      res.send("ERROR");
+    } else {
+      // res.send({ reqData: reqData });
+      let count = 0;
+
+      for (let i = 0; i < reqData.length; i++) {
+        if (
+          reqData[i].jumlahBahan * reqData[i].quantity <=
+          reqData[i].stokBahan
+        ) {
+          count++;
+        }
+      }
+
+      if (count == reqData.length) {
+        for (let i = 0; i < reqData.length; i++) {
+          var query = `UPDATE bahan_baku SET stokBahan = stokbahan - ${
+            reqData[i].jumlahBahan * reqData[i].quantity
+          } WHERE idBahan = ${reqData[i].idBahan}`;
+          connection.query(query, function (error, rows) {
+            if (error) {
+              console.log(error);
+            }
+          });
+        }
+        res.send({ success: "Done" });
+      } else {
+        res.send({ message: "Gagal" });
+      }
+    }
+  });
+};
+
+// exports.validateRequest = function (req, res) {
+//   var idRequest = req.body.idRequest;
+//   // var query = `SELECT idRequest, rq.idItem, quantity, rs.idBahan, jumlahBahan, stokBahan FROM request rq INNER JOIN resep rp ON rs.idItem = rq.idItem INNER JOIN bahan_baku b ON rs.idBahan = b.idBahan WHERE rq.idRequest = ${idRequest}`;
+//   var reqData = getAllRecordsForRequestByIdRequest(idRequest);
+
+//   let count = 0;
+
+//   for (let i = 0; i < reqData.length; i++) {
+//     if (
+//       reqData[i].jumlahBahan * reqData[i].jumlahBahan <=
+//       reqData[i].stokBahan
+//     ) {
+//       count++;
+//     }
+//   }
+
+//   if (count == reqData.length) {
+//     res.send({ success: "Bisa di acc" });
+//   }
+// };
 
 // exports.validateRequest = function (req, res) {
 //   var idRequest = req.body.idRequest;

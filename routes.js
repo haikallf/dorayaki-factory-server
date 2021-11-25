@@ -45,6 +45,7 @@ module.exports = function (app) {
   app.route("/request").get(myjson.setRequestToDeclineById);
   app.route("/tambahrequest").post(myjson.addRequest);
   app.route("/acceptrequest").post(myjson.validateRequest);
+  // app.route("/getrequestdata").get(myjson.getAllRecordsForRequestByIdRequest);
 
   app
     .route("/request/:ip?:enpoint?:timestamp?:iditem?:quantity:?:username?")

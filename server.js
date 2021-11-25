@@ -8,6 +8,7 @@ var connection = require("./connect");
 var md5 = require("md5");
 var jwt = require("jsonwebtoken");
 var mysql = require("mysql2");
+var myjson = require("./controller");
 
 // Parse app/json
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
